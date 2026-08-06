@@ -1,0 +1,349 @@
+{
+  "info": {
+    "name": "AutoRepairManagement.API",
+    "description": "Coleção dos endpoints do AutoRepairManagement.API (.NET 10, minimal APIs). Estágio atual do projeto: módulos Client, Vehicle e ServiceOrder (CRUD) implementados, sem autenticação. Todas as respostas são envelopadas em `Result`: `{ \"data\": ..., \"error\": ..., \"status\": ..., \"page\": ..., \"pageTotal\": ... }` (`page`/`pageTotal` só vêm preenchidos em listagens paginadas).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5044",
+      "type": "string",
+      "description": "Perfil HTTP de launchSettings.json. Perfil HTTPS: https://localhost:7130"
+    },
+    {
+      "key": "clientId",
+      "value": "",
+      "type": "string",
+      "description": "Guid de um client existente. Preencha após criar um client com a requisição 'Create Client' (pegue o id retornado ou consulte via GET all)."
+    },
+    {
+      "key": "vehicleId",
+      "value": "",
+      "type": "string",
+      "description": "Guid de um vehicle existente. Preencha após criar um vehicle com a requisição 'Create Vehicle' (pegue o id retornado ou consulte via GET all)."
+    },
+    {
+      "key": "serviceOrderId",
+      "value": "",
+      "type": "string",
+      "description": "Guid de um service order existente. Preencha após criar um service order com a requisição 'Create ServiceOrder' (pegue o id retornado ou consulte via GET all)."
+    },
+    {
+      "key": "page",
+      "value": "1",
+      "type": "string",
+      "description": "Número da página (1-based) usado nas listagens paginadas de Clients, Vehicles e ServiceOrders."
+    },
+    {
+      "key": "pageSize",
+      "value": "10",
+      "type": "string",
+      "description": "Quantidade de itens por página usada nas listagens paginadas de Clients, Vehicles e ServiceOrders."
+    }
+  ],
+  "item": [
+    {
+      "name": "Clients",
+      "item": [
+        {
+          "name": "Get All Clients",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/clients/{{page}}&{{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "clients", "{{page}}&{{pageSize}}"]
+            },
+            "description": "Listagem paginada de clients (não excluídos), ordenada por name/email. `page` e `pageSize` são segmentos de rota (não query string), separados por `&` (ex.: `/api/v1/clients/1&10`). Retorna 200 com `Result.data` contendo a página de clients, além de `Result.page` e `Result.pageTotal` (total de páginas)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Client By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/clients/{{clientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "clients", "{{clientId}}"]
+            },
+            "description": "Retorna 200 com `Result.data` contendo o client, ou `data: null` se o id não existir (este endpoint NÃO retorna 404 quando não encontra)."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Client",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/clients/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "clients", ""]
+            },
+            "description": "Cria um client. Validação: `name` obrigatório (máx 50 caracteres), `email` obrigatório e válido. Retorna 201 em caso de sucesso, 400 se o payload for inválido."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Client",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe Updated\",\n  \"email\": \"john.doe.updated@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/clients/{{clientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "clients", "{{clientId}}"]
+            },
+            "description": "Atualiza name/email de um client existente. Retorna 200 em caso de sucesso, 400 se o payload for inválido, 404 se o id não existir."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Client",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/clients/{{clientId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "clients", "{{clientId}}"]
+            },
+            "description": "Soft delete de um client (seta DeletedAt) e, em cascata, soft-deleta também todos os vehicles vinculados a esse client. O handler binda um body ClientDto embora não o utilize, então é enviado um body válido aqui para evitar erro de model binding. Retorna 200 em caso de sucesso, 404 se o id não existir.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Vehicles",
+      "item": [
+        {
+          "name": "Get All Vehicles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/vehicles/{{page}}&{{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "vehicles", "{{page}}&{{pageSize}}"]
+            },
+            "description": "Listagem paginada de vehicles (não excluídos), ordenada por plate/model. `page` e `pageSize` são segmentos de rota (não query string), separados por `&` (ex.: `/api/v1/vehicles/1&10`). Retorna 200 com `Result.data` contendo a página de vehicles (inclui `clientName`), além de `Result.page` e `Result.pageTotal` (total de páginas)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Vehicle By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/vehicles/{{vehicleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "vehicles", "{{vehicleId}}"]
+            },
+            "description": "Retorna 200 com `Result.data` contendo o vehicle (inclui `clientName`), ou `data: null` se o id não existir (este endpoint NÃO retorna 404 quando não encontra)."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Vehicle",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plate\": \"ABC1234\",\n  \"model\": \"Civic\",\n  \"year\": 2020,\n  \"kilometers\": 50000,\n  \"clientId\": \"{{clientId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/vehicles/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "vehicles", ""]
+            },
+            "description": "Cria um vehicle. Validação: `plate` obrigatório (máx 8 caracteres, único), `model` obrigatório (máx 50 caracteres), `year` obrigatório (> 0), `kilometers` obrigatório (> 0), `clientId` obrigatório (deve ser o Guid de um client existente). Retorna 201 em caso de sucesso, 400 se o payload for inválido."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Vehicle",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plate\": \"ABC1234\",\n  \"model\": \"Civic Updated\",\n  \"year\": 2021,\n  \"kilometers\": 60000,\n  \"clientId\": \"{{clientId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/vehicles/{{vehicleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "vehicles", "{{vehicleId}}"]
+            },
+            "description": "Atualiza plate/model/year/kilometers/clientId de um vehicle existente. Retorna 200 em caso de sucesso, 400 se o payload for inválido, 404 se o id não existir."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Vehicle",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/vehicles/{{vehicleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "vehicles", "{{vehicleId}}"]
+            },
+            "description": "Soft delete de um vehicle (seta DeletedAt). Retorna 200 em caso de sucesso, 404 se o id não existir.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ServiceOrders",
+      "item": [
+        {
+          "name": "Get All ServiceOrders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/serviceOrders/{{page}}&{{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "serviceOrders", "{{page}}&{{pageSize}}"]
+            },
+            "description": "Listagem paginada de service orders (não excluídos), ordenada pelo número sequencial do service order e depois pela placa do vehicle. `page` e `pageSize` são segmentos de rota (não query string), separados por `&` (ex.: `/api/v1/serviceOrders/1&10`). Retorna 200 com `Result.data` contendo a página de service orders (inclui `clientName` e `plate`), além de `Result.page` e `Result.pageTotal` (total de páginas)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get ServiceOrder By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/serviceOrders/{{serviceOrderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "serviceOrders", "{{serviceOrderId}}"]
+            },
+            "description": "Retorna 200 com `Result.data` contendo o service order (inclui `clientName` e `plate`), ou `data: null` se o id não existir (este endpoint NÃO retorna 404 quando não encontra)."
+          },
+          "response": []
+        },
+        {
+          "name": "Create ServiceOrder",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Troca de óleo e filtros\",\n  \"price\": 350.00,\n  \"status\": \"InProgress\",\n  \"endDate\": \"2026-08-15T18:00:00Z\",\n  \"clientId\": \"{{clientId}}\",\n  \"vehicleId\": \"{{vehicleId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/serviceOrders/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "serviceOrders", ""]
+            },
+            "description": "Cria um service order. `StartDate` é preenchido automaticamente pelo servidor (UtcNow) e o número sequencial `ServiceOrder` é calculado a partir do último criado. Validação: `description` obrigatório (máx 200 caracteres), `price` obrigatório, `status` obrigatório, `clientId` obrigatório (deve ser o Guid de um client existente), `vehicleId` obrigatório (deve ser o Guid de um vehicle existente). Retorna 201 em caso de sucesso, 400 se o payload for inválido."
+          },
+          "response": []
+        },
+        {
+          "name": "Update ServiceOrder",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Troca de óleo, filtros e alinhamento\",\n  \"price\": 480.00,\n  \"status\": \"Completed\",\n  \"endDate\": \"2026-08-16T18:00:00Z\",\n  \"clientId\": \"{{clientId}}\",\n  \"vehicleId\": \"{{vehicleId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/serviceOrders/{{serviceOrderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "serviceOrders", "{{serviceOrderId}}"]
+            },
+            "description": "Atualiza description/price/status/endDate/clientId/vehicleId de um service order existente. Retorna 200 em caso de sucesso, 400 se o payload for inválido, 404 se o id não existir."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete ServiceOrder",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/serviceOrders/{{serviceOrderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "serviceOrders", "{{serviceOrderId}}"]
+            },
+            "description": "Soft delete de um service order (seta DeletedAt). Retorna 200 em caso de sucesso, 404 se o id não existir ou já estiver deletado.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
