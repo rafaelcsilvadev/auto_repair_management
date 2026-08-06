@@ -1,0 +1,22 @@
+.card-custom {
+    width: 50% !important;
+}
+
+.card-negative {
+    border-color: var(--color-danger);
+}
+.card-title {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+
+.card-value {
+    font-size: 2rem;
+    color: var(--color-text);
+    font-weight: 700;
+}
+
+.card-value-negative {
+    color: var(--color-danger);
+}

@@ -1,0 +1,7 @@
+﻿services:
+  autorepairmanagement.frontend:
+    image: autorepairmanagement.frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+

@@ -1,0 +1,86 @@
+@inherits LayoutComponentBase
+
+<main class="d-flex flex-row h-auto">
+   <div
+        class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark"
+        style="width: 280px"
+      >
+        <a
+          href="/"
+          class="d-flex align-items-center mb-3 text-white text-decoration-none"
+        >
+
+          <span class="fs-4">&#128295 Oficina</span>
+        </a>
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a href="/dashboard" class="nav-link active" aria-current="page">
+              <svg
+                class="bi pe-none me-2"
+                width="16"
+                height="16"
+                aria-hidden="true"
+              >
+                <use xlink:href="/dashboard"></use>
+              </svg>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link text-white">
+              <svg
+                class="bi pe-none me-2"
+                width="16"
+                height="16"
+                aria-hidden="true"
+              >
+                <use xlink:href="#speedometer2"></use>
+              </svg>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link text-white">
+              <svg
+                class="bi pe-none me-2"
+                width="16"
+                height="16"
+                aria-hidden="true"
+              >
+                <use xlink:href="#table"></use>
+              </svg>
+              Orders
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link text-white">
+              <svg
+                class="bi pe-none me-2"
+                width="16"
+                height="16"
+                aria-hidden="true"
+              >
+                <use xlink:href="#grid"></use>
+              </svg>
+              Products
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link text-white">
+              <svg
+                class="bi pe-none me-2"
+                width="16"
+                height="16"
+                aria-hidden="true"
+              >
+                <use xlink:href="#people-circle"></use>
+              </svg>
+              Customers
+            </a>
+          </li>
+        </ul>
+      </div>
+
+        @Body
+
+</main>
